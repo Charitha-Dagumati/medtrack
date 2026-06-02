@@ -83,7 +83,7 @@ public class ExpiryScheduler {
         // Send only if there is something to report
         if (report.length() > "===== MEDICINE ALERT REPORT =====\n\n".length()) {
             emailService.sendDailySummary(
-                    "yourgmail@gmail.com",
+                    "dagumaticharitha@gmail.com",
                     report.toString()
             );
         }
