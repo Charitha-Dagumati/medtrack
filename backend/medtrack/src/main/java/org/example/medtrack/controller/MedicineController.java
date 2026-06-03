@@ -1,9 +1,9 @@
 package org.example.medtrack.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
-import org.example.medtrack.entity.Medicine;
+import org.example.medtrack.dto.MedicineRequestDTO;
+import org.example.medtrack.dto.MedicineResponseDTO;
 import org.example.medtrack.service.MedicineService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,45 +12,38 @@ import java.util.List;
 @RequestMapping("/medicine")
 public class MedicineController {
 
-    private final MedicineService medicineService;
+    @Autowired
+    private MedicineService medicineService;
 
-    public MedicineController(MedicineService medicineService) {
-        this.medicineService = medicineService;
+    // ➤ ADD MEDICINE
+    @PostMapping
+    public MedicineResponseDTO addMedicine(@RequestBody MedicineRequestDTO dto) {
+        return medicineService.saveMedicine(dto);
     }
 
-    @Operation(summary = "Get all medicines")
+    // ➤ GET ALL
     @GetMapping
-    public List<Medicine> getAllMedicines() {
+    public List<MedicineResponseDTO> getAll() {
         return medicineService.getAllMedicines();
     }
 
-    @Operation(summary = "Get medicine by ID")
+    // ➤ GET BY ID
     @GetMapping("/{id}")
-    public Medicine getMedicineById(@PathVariable Long id) {
+    public MedicineResponseDTO getById(@PathVariable Long id) {
         return medicineService.getMedicineById(id);
     }
 
-    @Operation(summary = "Add new medicine")
-    @PostMapping
-    public Medicine addMedicine(@Valid @RequestBody Medicine medicine) {
-        return medicineService.saveMedicine(medicine);
-    }
-
-    @Operation(summary = "Update medicine details")
+    // ➤ UPDATE
     @PutMapping("/{id}")
-    public Medicine updateMedicine(
-            @PathVariable Long id,
-            @Valid @RequestBody Medicine medicine) {
-
-        return medicineService.updateMedicine(id, medicine);
+    public MedicineResponseDTO update(@PathVariable Long id,
+                                      @RequestBody MedicineRequestDTO dto) {
+        return medicineService.updateMedicine(id, dto);
     }
 
-    @Operation(summary = "Delete medicine")
+    // ➤ DELETE
     @DeleteMapping("/{id}")
-    public String deleteMedicine(@PathVariable Long id) {
-
+    public String delete(@PathVariable Long id) {
         medicineService.deleteMedicine(id);
-
         return "Medicine deleted successfully";
     }
 }
