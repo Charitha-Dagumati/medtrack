@@ -49,33 +49,22 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(
-            @RequestBody LoginRequest request) {
+    public Map<String, String> login(@RequestBody LoginRequest request) {
 
-        User user = userRepository
-                .findByUsername(request.getUsername())
-                .orElseThrow(() ->
-                        new RuntimeException("User not found")
-                );
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!encoder.matches(
-                request.getPassword(),
-                user.getPassword()
-        )) {
-
-            throw new RuntimeException(
-                    "Invalid Password"
-            );
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid Password");
         }
 
-        String token =
-                jwtUtil.generateToken(
-                        user.getUsername()
-                );
+        // ✅ FIXED LINE
+        String token = jwtUtil.generateToken(
+                user.getUsername(),
+                user.getRole()
+        );
 
-        Map<String, String> response =
-                new HashMap<>();
-
+        Map<String, String> response = new HashMap<>();
         response.put("token", token);
 
         return response;
