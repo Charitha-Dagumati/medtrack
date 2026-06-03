@@ -32,10 +32,11 @@ function App() {
   };
 
   useEffect(() => {
-    if (token) {
-      fetchMedicines();
-    }
-  }, [token]);
+  if (token) {
+    fetchMedicines();
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [token]);
 
   const fetchMedicines = () => {
     axios.get(API_URL, authConfig)
