@@ -29,8 +29,16 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    // =========================
+    // REGISTER (FIXED)
+    // =========================
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest request) {
+
+        // prevent duplicate username
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
 
         User user = new User();
         user.setUsername(request.getUsername());
@@ -42,6 +50,9 @@ public class AuthController {
         return "User Registered Successfully";
     }
 
+    // =========================
+    // LOGIN (FIXED)
+    // =========================
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody LoginRequest request) {
 
