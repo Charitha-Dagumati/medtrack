@@ -12,6 +12,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
+    // ⚠️ Secret must be at least 32 characters
     private static final String SECRET =
             "medtrack_super_secure_secret_key_123456789";
 
@@ -25,9 +26,11 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim("role", role)
+                .claim("role", role)   // USER / ADMIN
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + 1000 * 60 * 60) // 1 hour
+                )
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -59,7 +62,7 @@ public class JwtUtil {
     }
 
     // =========================
-    // PARSE CLAIMS
+    // PARSE TOKEN CLAIMS
     // =========================
     private Claims getClaims(String token) {
         return Jwts.parserBuilder()
