@@ -7,20 +7,22 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    @Value("${JWT_SECRET}")
+    @Value("${JWT_SECRET:mysupersecretkeymysupersecretkey123456}")
     private String secret;
 
     private Key getSigningKey() {
-        if (secret == null || secret.length() < 32) {
-            throw new IllegalStateException("JWT_SECRET is missing or too short");
+        if (secret == null || secret.trim().length() < 32) {
+            throw new IllegalStateException("JWT_SECRET is missing or too weak (min 32 chars required)");
         }
-        return Keys.hmacShaKeyFor(secret.getBytes());
+
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     // GENERATE TOKEN
