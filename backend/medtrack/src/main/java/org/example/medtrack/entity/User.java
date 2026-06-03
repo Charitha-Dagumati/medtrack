@@ -3,12 +3,9 @@ package org.example.medtrack.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-        name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username")
-        }
-)
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username")
+})
 public class User {
 
     @Id
@@ -21,6 +18,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String role;
 
     public User() {}

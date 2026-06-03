@@ -19,23 +19,18 @@ public class AuthController {
     private final BCryptPasswordEncoder encoder;
     private final JwtUtil jwtUtil;
 
-    public AuthController(
-            UserRepository userRepository,
-            BCryptPasswordEncoder encoder,
-            JwtUtil jwtUtil) {
-
+    public AuthController(UserRepository userRepository,
+                          BCryptPasswordEncoder encoder,
+                          JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.jwtUtil = jwtUtil;
     }
 
-    // =========================
-    // REGISTER (FIXED)
-    // =========================
+    // REGISTER
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest request) {
 
-        // prevent duplicate username
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
@@ -50,9 +45,7 @@ public class AuthController {
         return "User Registered Successfully";
     }
 
-    // =========================
-    // LOGIN (FIXED)
-    // =========================
+    // LOGIN
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody LoginRequest request) {
 
@@ -63,10 +56,8 @@ public class AuthController {
             throw new RuntimeException("Invalid Password");
         }
 
-        String token = jwtUtil.generateToken(
-                user.getUsername(),
-                user.getRole()
-        );
+        // FIXED: now passing role also
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
 
         Map<String, String> response = new HashMap<>();
         response.put("token", token);

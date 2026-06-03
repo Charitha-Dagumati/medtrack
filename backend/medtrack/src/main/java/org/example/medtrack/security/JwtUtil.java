@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -12,35 +13,38 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET =
-            "medtrack_super_secure_secret_key_123456789";
+    @Value("${JWT_SECRET}")
+    private String secret;
 
-    private final Key key =
-            Keys.hmacShaKeyFor(SECRET.getBytes());
+    private Key getSigningKey() {
+        if (secret == null || secret.length() < 32) {
+            throw new IllegalStateException("JWT_SECRET is missing or too short");
+        }
+        return Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
-    // ✅ GENERATE TOKEN WITH ROLE
+    // GENERATE TOKEN
     public String generateToken(String username, String role) {
-
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // extract username
+    // EXTRACT USERNAME
     public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }
 
-    // extract role
+    // EXTRACT ROLE
     public String extractRole(String token) {
         return getClaims(token).get("role", String.class);
     }
 
-    // validate token
+    // VALIDATE TOKEN
     public boolean validateToken(String token) {
         try {
             getClaims(token);
@@ -50,10 +54,10 @@ public class JwtUtil {
         }
     }
 
-    // parse claims
+    // PARSE CLAIMS
     private Claims getClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
