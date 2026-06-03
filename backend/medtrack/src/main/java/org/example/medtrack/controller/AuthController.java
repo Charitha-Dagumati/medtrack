@@ -30,17 +30,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(
-            @RequestBody RegisterRequest request) {
+    public String register(@RequestBody RegisterRequest request) {
 
         User user = new User();
-
         user.setUsername(request.getUsername());
-
-        user.setPassword(
-                encoder.encode(request.getPassword())
-        );
-
+        user.setPassword(encoder.encode(request.getPassword()));
         user.setRole("USER");
 
         userRepository.save(user);
@@ -58,7 +52,6 @@ public class AuthController {
             throw new RuntimeException("Invalid Password");
         }
 
-        // ✅ FIXED LINE
         String token = jwtUtil.generateToken(
                 user.getUsername(),
                 user.getRole()
