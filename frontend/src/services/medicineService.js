@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/medicine";
+const API_URL = "https://medtrack-t62r.onrender.com/medicine";
 
 export const getMedicines = () => {
   return axios.get(API_URL);

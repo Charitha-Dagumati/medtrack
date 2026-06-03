@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "https://medtrack-t62r.onrender.com",
 });
 
 // Attach JWT token automatically

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Login from "./pages/Login";
 
-const API_URL = "http://localhost:8080/medicine";
+const API_URL = "https://medtrack-t62r.onrender.com/medicine";
 
 function App() {
   const [token, setToken] = useState(
